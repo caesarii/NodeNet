@@ -92,7 +92,7 @@ const message = request => {
     return r
 }
 
-const static = request => {
+const staticRes = request => {
     const filename = request.query.file || 'doge.gif'
     const path = `static/${filename}`
     const body = fs.readFileSync(path)
@@ -104,7 +104,7 @@ const static = request => {
 
 const routeMapper = {
     '/': index,
-    '/static': static,
+    '/static': staticRes,
     '/login': login,
     '/register': register,
     '/message': message,
