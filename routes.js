@@ -11,7 +11,7 @@ const messageList = []
 
 // 读取 html 文件的函数
 const template = name => {
-    const path = 'template/' + name
+    const path = 'templates/' + name
     const options = {
         encoding: 'utf8'
     }
@@ -86,9 +86,9 @@ const message = request => {
     const header = 'HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n'
     let body = template('message.html')
     const s = messageList.map(m => {
-        return m.toStrig()
+        return m.toString()
     }).join('<br>')
-    body = body.replace('{{message}}', s)
+    body = body.replace('{{messages}}', s)
     const r = header + '\r\n' + body
     return r
 }
@@ -99,7 +99,7 @@ const static = request => {
     const body = fs.readFileSync(path)
     const header = 'HTTP/1.1 200 OK\r\nContent-Type: image/gif\r\n\r\n'
     const h = Buffer.from(header)
-    const r = Buffer.concat(concat([h, body]))
+    const r = Buffer.concat([h, body])
     return r
 }
 
