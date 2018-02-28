@@ -1,5 +1,5 @@
 const fs = require('fs')
-const log = require('./utils')
+const {log, }= require('./utils')
 
 // 引入 Model 模块
 const models = require('./models')
@@ -31,7 +31,7 @@ const index = () => {
 // 登录处理函数
 const login = request => {
     let result
-    if(request.method === 'post') {
+    if(request.method === 'POST') {
         const form = request.form()
         const u = User.create(form)
         
@@ -43,7 +43,6 @@ const login = request => {
     } else {
         result = ''
     }
-    
     const header = 'HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n'
     let body = template('login.html')
     body = body.replace('{{result}}', result)

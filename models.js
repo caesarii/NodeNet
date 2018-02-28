@@ -1,5 +1,5 @@
 const fs = require('fs')
-const log = require('./utils')
+const {log }= require('./utils')
 
 // 检查文件是否存在，不存在则创建
 const ensureExists = path => {
@@ -80,7 +80,7 @@ class Model {
 class User extends Model {
     constructor(form = {}) {
         super()
-        this.username = form || ''
+        this.username = form.username || ''
         this.password = form.password || ''
     }
     
