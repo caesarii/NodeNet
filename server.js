@@ -1,6 +1,8 @@
 const net = require('net')
 const fs = require('fs')
 const {log, } = require('./utils')
+const Request = require('./request')
+
 
 // 注册处理函数
 const routeIndex = () => {
