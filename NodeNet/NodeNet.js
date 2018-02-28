@@ -30,7 +30,6 @@ class NodeNet {
                 
                 // response
                 const response = this.responseFor(raw)
-                log('response', response)
                 // 发送数据
                 socket.write(response)
                 
