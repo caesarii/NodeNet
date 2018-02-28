@@ -1,5 +1,5 @@
 // Request: 保存请求相关的信息
-
+const {log} = require('./utils')
 // 解析 path
 const parsedPath = (path) => {
     // 是否包含 query
@@ -39,6 +39,7 @@ class Request {
     }
     
     init() {
+        // log('raw', this.raw)
         // 解析原始请求信息
         const raw = this.raw
         const raws = raw.split(' ')

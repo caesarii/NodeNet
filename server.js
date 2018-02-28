@@ -1,35 +1,9 @@
 const net = require('net')
 const fs = require('fs')
+
 const {log, } = require('./utils')
 const Request = require('./request')
 const routeMapper = require('./routes')
-
-
-// 注册处理函数
-const routeIndex = () => {
-    const header = 'HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n'
-    const body = '<h1>Hello World</h1><img src="image.png>"'
-    const r = header + '\r\n' + body
-    return r
-}
-
-const routeHello = () => {
-    const header = 'HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf8\r\n'
-    const body = '<head></head><body><h3>这是对应 /hello 路由的body </h3></body>'
-    const r = header + '\r\n' + body
-    return r
-}
-
-const routeImage = () => {
-    const header = 'HTTP/1.1 200 OK\r\nContent-Type: image/png\r\n\r\n'
-    // 加载图片
-    const file = 'image.png'
-    const body = fs.readFileSync(file)
-    // 拼接 buffer
-    const h = Buffer.from(header)
-    const r = Buffer.concat([h, body])
-    return r
-}
 
 const error = (code=404) => {
     const e = {
@@ -40,17 +14,17 @@ const error = (code=404) => {
     return r
 }
 
-const responseForPath = (path) => {
-    const r = {
-        '/': routeIndex,
-        '/image': routeImage,
-        '/hello': routeHello,
-    }
+const responseFor = (raw) => {
+    const request = new Request(raw)
+    request.init()
     
-    const router = r[path] || error
-    const response = router()
-    return response
-    
+    // 定义 route
+    const route = {}
+    const routes = Object.assign(route, routeMapper)
+    // 获取响应函数
+    const response = routes[request.path] || error
+    // 生成响应
+    return response(request)
 }
 
 const run = (host = '', port = 3000) => {
@@ -66,17 +40,10 @@ const run = (host = '', port = 3000) => {
         // 接收数据
         socket.on('data', (data) => {
             // buffer 类型转成字符串
-            const request = data.toString()
-            const ip = socket.localAddress
-            log(`ip an request: ip 的值： ${ip}\n request 的内容 \n${request}`)
-            
-            // 解析请求
-            const method = request.split(' ')[0]
-            const path = request.split(' ')[1]
-            // 生成响应
+            const raw = data.toString('utf8')
             
             // response
-            const response = responseForPath(path)
+            const response = responseFor(raw)
             
             // 发送数据
             socket.write(response)
